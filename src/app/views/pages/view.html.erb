@@ -1,1 +1,18 @@
-<h2>Pages#view</h2>
+<% if @page %>
+        <div class="contextual">
+                <a class="icon icon-edit" accesskey="e" href="<%=@path%>/edit">Edit</a>
+        </div>
+
+	<h2>
+	<% if @page.title %>
+		<%= @page.title %>
+	<% else %>
+		<%= @page.url %>
+	<% end %>
+	</h2>
+
+	<%=@page.content %>
+
+<% else %>
+	<p class="nodata">The page does not exist yet, if you want to create it, go <a href="<%=@path%>/edit"><b>here</b></a>.</p>
+<% end %>

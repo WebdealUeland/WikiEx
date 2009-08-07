@@ -1,0 +1,25 @@
+<% if @page %>
+	<h2>
+		Editing page 
+		<% if @page.title %>
+			<%= @page.title %>
+		<% else %>
+			<%= @page.url %>
+		<% end %>
+	</h2>
+<% else %>
+	<h2>Creating page <%= @path %></h2>
+<% end %>
+
+<div id="edit-news">
+	<form action="<%= @path %>/edit/save" method="POST" id="box tabular" class="tabular">
+		<div class="box tabular">
+			<p>
+				<label for="text">Summary<span class="required"> *</span></label>	
+				<textarea id="text" name="text" rows="14" class="wiki-edit"><%=@page.content%></textarea>
+			</p>
+		</div>
+		<input type="hidden" name="path" value="<%= @path %>" />
+		<input type="submit" value="Save changes" />
+	</form>
+</div>

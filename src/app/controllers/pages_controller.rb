@@ -9,7 +9,9 @@ class PagesController < PluginCore
   def edit
         @path = getPage(true)
         @page = Page.find(:first, :conditions => ["url=?", @path])
-	@page['content'] = fromWikiCode(@page['content'])
+	if(@page.nil? == false)
+		@page['content'] = fromWikiCode(@page['content'])
+	end
   end
 
   def save

@@ -17,12 +17,16 @@
 
 			<p>
 				<label for="text">Page title</label>
-				<input type="text" name="title" value="<%=@page.title%>" />
+				<% if @page %>
+					<input type="text" name="title" value="<%=@page.title%>" />
+				<% else %>
+					<input type="text" name="title" />
+				<% end %>
 			</p>
 
 			<p>
 				<label for="text">Summary<span class="required"> *</span></label>	
-				<textarea id="text" name="text" rows="14" class="wiki-edit"><%=@page.content%></textarea>
+				<textarea id="text" name="text" rows="14" class="wiki-edit"><% if @page %><%=@page.content%><% end %></textarea>
 			</p>
 		</div>
 		<input type="hidden" name="path" value="<%= @path %>" />

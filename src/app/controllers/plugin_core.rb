@@ -89,7 +89,7 @@ class PluginCore < ApplicationController
 					inTr = 0
 				end
 				if(inTable == 1 && lineBreaks > 1)
-					str += "</table><br />"
+					str += "</table>"
 					inTable = 0	
 				end
 				str += c
@@ -119,7 +119,7 @@ class PluginCore < ApplicationController
 	def fromWikiCode(str)
 
 		#remove autoformated newlines
-		#str = str.gsub("\n", "")
+		str = str.gsub("\n", "")
 
 		#br
 		str = str.gsub("<br />", "\n")
@@ -127,14 +127,14 @@ class PluginCore < ApplicationController
 
 		#Table
 		str = str.gsub(/<table(.*?)>/, "")
-		str = str.gsub("</td></tr>", "|\n")
+		str = str.gsub("</td></tr>", "|")
 		str = str.gsub(/<tr>/, "")
-		str = str.gsub("</tr>", "\n")
+		str = str.gsub("</tr>", "")
 		str = str.gsub("<th>", "^")
 		str = str.gsub("</th>", "")
 		str = str.gsub("<td>", "|")
 		str = str.gsub("</td>", "")
-		str = str.gsub("</table>", "\n")
+		str = str.gsub("</table>", "")
 			
 	
 		#bold/italic

@@ -105,8 +105,10 @@ class PluginCore < ApplicationController
                 str = str.gsub("\r", "<br />")
 
 
-		#bold/italic
+		#bold/italic/underline
 		str = str.gsub(/\*\*(.*?)\*\*/, '<b>\1</b>')
+		str = str.gsub(/\/\/(.*?)\/\//, '<i>\\1</i>')
+		str = str.gsub(/__(.*?)__/, '<u>\\1</u>')
 
 		#Hn
 		str = str.gsub(/======(.*?)======/, '<h1>\1</h1>')
@@ -137,8 +139,10 @@ class PluginCore < ApplicationController
 		str = str.gsub("</table>", "")
 			
 	
-		#bold/italic
+		#bold/italic/underline
 		str = str.gsub(/<b>(.*?)<\/b>/, '**\1**')
+		str = str.gsub(/<i>(.*?)<\/i>/, '//\1//')
+		str = str.gsub(/<u>(.*?)<\/u>/, '__\1__')
 
 		#Hn
 		str = str.gsub(/<h1>(.*?)<\/h1>/, '======\1======')

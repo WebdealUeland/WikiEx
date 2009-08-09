@@ -19,6 +19,7 @@ class PagesController < PluginCore
 		@page = Page.new()
 	end
 	@page['content'] = toWikiCode(params['text'])
+	@page['title'] = params['title']
 	@page['url']  = path.to_s
 	@page.save
 	#raise YAML::dump @page

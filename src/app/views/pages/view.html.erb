@@ -1,15 +1,36 @@
+<style type="text/css"> 
+
+	table.inline {
+		background-color:#FFFFFF;
+		border-style:none;
+	}
+	
+	table.inline th {
+		background-color:#DEE7EC;
+		border:1px solid #8CACBB;
+		padding:3px;
+	}
+
+	table.inline td {
+		border:1px solid #8CACBB;
+		padding:3px;
+	}
+
+
+</style>
+
 <% if @page %>
         <div class="contextual">
                 <a class="icon icon-edit" accesskey="e" href="<%=@path%>/edit">Edit</a>
         </div>
 
-	<h2>
+	<h1>
 	<% if @page.title %>
 		<%= @page.title %>
 	<% else %>
 		<%= @page.url %>
 	<% end %>
-	</h2>
+	</h1>
 
 	<%=@page.content %>
 

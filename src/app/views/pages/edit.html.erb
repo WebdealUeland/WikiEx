@@ -14,6 +14,12 @@
 <div id="edit-news">
 	<form action="<%= @path %>/edit/save" method="POST" id="box tabular" class="tabular">
 		<div class="box tabular">
+
+			<p>
+				<label for="text">Page title</label>
+				<input type="text" name="title" value="<%=@page.title%>" />
+			</p>
+
 			<p>
 				<label for="text">Summary<span class="required"> *</span></label>	
 				<textarea id="text" name="text" rows="14" class="wiki-edit"><%=@page.content%></textarea>

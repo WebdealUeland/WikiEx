@@ -36,7 +36,7 @@ class PluginCore < ApplicationController
 			if(c == "^" || c == "|")
 				if(inTable == 0)
 					inTable = 1
-					str += "<table border='1' width='1'>\n"
+					str += "<table class='inline'>\n"
 				end
 				if(c == "^")
 					if(inTd == 1)
@@ -109,6 +109,7 @@ class PluginCore < ApplicationController
 		str = str.gsub(/\*\*(.*?)\*\*/, '<b>\1</b>')
 
 		#Hn
+		str = str.gsub(/======(.*?)======/, '<h1>\1</h1>')
 		str = str.gsub(/=====(.*?)=====/, '<h2>\1</h2>')
 		str = str.gsub(/====(.*?)====/, '<h3>\1</h3>')
 		#raise YAML::dump(str)
@@ -118,10 +119,10 @@ class PluginCore < ApplicationController
 	def fromWikiCode(str)
 
 		#remove autoformated newlines
-		str = str.gsub("\n", "")
+		#str = str.gsub("\n", "")
 
 		#br
-		str = str.gsub("<br />", "")
+		str = str.gsub("<br />", "\n")
 		str = str.gsub("\t", "")
 
 		#Table
@@ -140,8 +141,10 @@ class PluginCore < ApplicationController
 		str = str.gsub(/<b>(.*?)<\/b>/, '**\1**')
 
 		#Hn
+		str = str.gsub(/<h1>(.*?)<\/h1>/, '======\1======')
 		str = str.gsub(/<h2>(.*?)<\/h2>/, '=====\1=====')
 		str = str.gsub(/<h3>(.*?)<\/h3>/, '====\1====')
+
 		return str
 	end
 end

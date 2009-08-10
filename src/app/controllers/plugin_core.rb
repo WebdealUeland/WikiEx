@@ -1,6 +1,16 @@
 class PluginCore < ApplicationController
 	unloadable
 
+	def getProjectName()
+		src = getPage()
+		if(src.include? "/project/")
+			tmp = src.split("/")
+			return tmp[3]
+		else
+			return ""
+		end
+	end
+
 	def getPage(skipEdit=false, skipSave=false)
 		str = request.request_uri
 		if(skipEdit)

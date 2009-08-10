@@ -24,10 +24,12 @@
 
 </style>
 
+<% content_for :sidebar do %>
+    <%= render :partial => 'wikiex/sidebar' %>
+<% end %>
+
+
 <% if @page %>
-        <div class="contextual">
-                <a class="icon icon-edit" accesskey="e" href="<%=@path%>/edit">Edit</a>
-        </div>
 
 	<h1>
 	<% if @page.title %>

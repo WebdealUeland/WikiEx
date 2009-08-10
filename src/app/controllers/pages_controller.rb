@@ -1,6 +1,8 @@
 class PagesController < PluginCore
   unloadable;
 
+  before_filter :find_project
+
   def view
 	@path = getPage()
 	@page = Page.find(:first, :conditions => ["url=?", @path])
@@ -26,5 +28,14 @@ class PagesController < PluginCore
 	@page.save
 	#raise YAML::dump @page
 	redirect_to path.to_s
+  end
+
+private
+  
+  #Find a project based on project name
+  def find_project
+    @project = Project.first(:conditions => ["identifier = ?",getProjectName() ])
+      rescue ActiveRecord::RecordNotFound
+	#do nothing
   end
 end

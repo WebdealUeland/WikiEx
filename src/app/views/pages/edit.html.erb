@@ -11,6 +11,11 @@
 	<h2>Creating page <%= @path %></h2>
 <% end %>
 
+<% content_for :sidebar do %>
+    <%= render :partial => 'wikiex/sidebar_edit' %>
+<% end %>
+
+
 <div id="edit-news">
 	<form action="<%= @path %>/edit/save" method="POST" id="box tabular" class="tabular">
 		<div class="box tabular">

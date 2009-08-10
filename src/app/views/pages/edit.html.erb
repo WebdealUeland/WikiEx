@@ -23,9 +23,9 @@
 			<p>
 				<label for="text">Page title</label>
 				<% if @page %>
-					<input type="text" name="title" value="<%=@page.title%>" />
+					<input type="text" name="title" value="<%=@page.title%>" /> Current version: <%=@page.version%>
 				<% else %>
-					<input type="text" name="title" />
+					<input type="text" name="title" /> Current version: 1
 				<% end %>
 			</p>
 

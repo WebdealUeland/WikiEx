@@ -6,6 +6,11 @@ class PluginCore < ApplicationController
 		src = getPage()
 		if(src.include? "/project/")
 			tmp = src.split("/")
+		
+			#Fix redirect to make shure we are in right virtual folder for project	
+			if(tmp.size == 4 && src.ends_with?("/") == false)
+				redirect_to getPage()+"/"
+			end
 			return tmp[3]
 		else
 			return ""
@@ -34,6 +39,11 @@ class PluginCore < ApplicationController
 		orig = orig.split(/\n+/).join("\n")
 		orig = orig.gsub("\t", "  ")
 
+		#Remove other naughty characters
+                orig = orig.gsub("<", "&lt;")
+                orig = orig.gsub(">", "&gt;")
+
+
 		afterNoWiki = ""
 		tmp = orig.split("\n")
 		inDiv = 0
@@ -45,8 +55,6 @@ class PluginCore < ApplicationController
 				end
 				parsed = d
 				parsed = parsed.gsub(" ", "&nbsp;")
-				parsed = parsed.gsub("<", "&lt;")
-				parsed = parsed.gsub(">", "&gt;")
 				parsed = parsed.gsub("*", "&#42;")
 				parsed = parsed.gsub("/", "&#47;")
 				parsed = parsed.gsub("_", "&#95;")
@@ -59,7 +67,7 @@ class PluginCore < ApplicationController
 				afterNoWiki += d
 			end
 		end
-	
+
 		#Convert links with spesific title
                 afterNoWiki = afterNoWiki.gsub(/\[\[(.*?)\|(.*?)\]\]/, '<a class="advanced" href="\1">\2</a>')	
 

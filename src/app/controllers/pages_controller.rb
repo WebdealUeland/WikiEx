@@ -25,6 +25,11 @@ class PagesController < PluginCore
 	@page['content'] = toWikiCode(params['text'])
 	@page['title'] = params['title']
 	@page['url']  = path.to_s
+	if(@page['version'])
+		@page['version'] += 1
+	else 
+		@page['version'] = 1
+	end
 	@page.save
 	#raise YAML::dump @page
 	redirect_to path.to_s

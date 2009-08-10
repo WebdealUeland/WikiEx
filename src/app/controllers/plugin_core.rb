@@ -15,6 +15,35 @@ class PluginCore < ApplicationController
 
 	def toWikiCode(orig)
 
+		orig = orig.split(/\n+/).join("\n")
+		orig = orig.gsub("\t", "  ")
+
+		afterNoWiki = ""
+		tmp = orig.split("\n")
+		inDiv = 0
+		tmp.each do |d|
+			if(d[0,2] == "  ")
+				if(inDiv == 0)
+					inDiv = 1
+					afterNoWiki += '<div class="nowiki">'
+				end
+				parsed = d
+				parsed = parsed.gsub(" ", "&nbsp;")
+				parsed = parsed.gsub("<", "&lt;")
+				parsed = parsed.gsub(">", "&gt;")
+				parsed = parsed.gsub("*", "&#42;")
+				parsed = parsed.gsub("/", "&#47;")
+				parsed = parsed.gsub("_", "&#95;")
+				afterNoWiki += parsed
+			else
+				if(inDiv == 1)
+					inDiv = 0
+					afterNoWiki += "</div>"
+				end
+				afterNoWiki += d
+			end
+		end
+		
 		str = ""
 		
 		#Table(s)
@@ -23,7 +52,7 @@ class PluginCore < ApplicationController
 		inTr = 0
 		inTd = 0
 		lineBreaks = 0
-		tmp = orig.scan(/./)
+		tmp = afterNoWiki.scan(/./)
 		tmp.each do |c|
 
 			#wait for line break
@@ -109,6 +138,7 @@ class PluginCore < ApplicationController
 		str = str.gsub(/\*\*(.*?)\*\*/, '<b>\1</b>')
 		str = str.gsub(/\/\/(.*?)\/\//, '<i>\\1</i>')
 		str = str.gsub(/__(.*?)__/, '<u>\\1</u>')
+
 
 		#Hn
 		str = str.gsub(/======(.*?)======/, '<h1>\1</h1>')

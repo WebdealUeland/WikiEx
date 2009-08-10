@@ -1,6 +1,6 @@
 class PagesController < PluginCore
   unloadable;
-
+  require 'date'
   before_filter :find_project
 
   def view
@@ -21,6 +21,17 @@ class PagesController < PluginCore
 	@page = Page.find(:first, :conditions => ["url=?", path])
 	if(@page.nil?)
 		@page = Page.new()
+	else
+		#Save old page content to revision list before we convert it
+		#pageid:integer, version:integer, title:string, content:text, when:date, author:string	
+		@rev = Revision.new()
+		@rev['pageid']  = @page['id']
+		@rev['version'] = @page['version']
+		@rev['title']   = @page['title']
+		@rev['content'] = @page['content']
+		@rev['when']    = Date.new
+		@rev['author']  = "n/a"
+		@rev.save()
 	end
 	@page['content'] = toWikiCode(params['text'])
 	@page['title'] = params['title']
@@ -31,6 +42,7 @@ class PagesController < PluginCore
 		@page['version'] = 1
 	end
 	@page.save
+
 	#raise YAML::dump @page
 	redirect_to path.to_s
   end

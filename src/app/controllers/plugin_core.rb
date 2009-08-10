@@ -152,6 +152,11 @@ class PluginCore < ApplicationController
 
 		#remove autoformated newlines
 		str = str.gsub("\n", "")
+		str = str.gsub("\t", "  ")
+		str = str.gsub("&nbsp;", " ")
+
+		#Remove nowiki code snippets
+		str = str.gsub(/<div class="nowiki">(.*?)<\/div>/, '\1')
 
 		#br
 		str = str.gsub("<br />", "\n")

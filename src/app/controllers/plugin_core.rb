@@ -1,6 +1,7 @@
 class PluginCore < ApplicationController
 	unloadable
 
+	#Figures out project name based on URL
 	def getProjectName()
 		src = getPage()
 		if(src.include? "/project/")
@@ -11,6 +12,8 @@ class PluginCore < ApplicationController
 		end
 	end
 
+
+ 	#Returns page URL
 	def getPage(skipEdit=false, skipSave=false)
 		str = request.request_uri
 		if(skipEdit)
@@ -23,8 +26,11 @@ class PluginCore < ApplicationController
 		return str
 	end
 
+
+	#Converts Wiki code to HTML
 	def toWikiCode(orig)
 
+		# Remove strange newlines and tab characters
 		orig = orig.split(/\n+/).join("\n")
 		orig = orig.gsub("\t", "  ")
 
@@ -53,7 +59,13 @@ class PluginCore < ApplicationController
 				afterNoWiki += d
 			end
 		end
-		
+	
+		#Convert links with spesific title
+                afterNoWiki = afterNoWiki.gsub(/\[\[(.*?)\|(.*?)\]\]/, '<a class="advanced" href="\1">\2</a>')	
+
+		#Convert links to href`s
+		afterNoWiki = afterNoWiki.gsub(/\[\[(.*?)\]\]/, '<a class="simple" href="\1">\1</a>')
+
 		str = ""
 		
 		#Table(s)
@@ -158,6 +170,9 @@ class PluginCore < ApplicationController
 		return str
 	end
 
+
+	# Converts from HTML to wiki code
+	# (And yes, the function names is mirrored for some reason...)
 	def fromWikiCode(str)
 
 		#remove autoformated newlines
@@ -171,6 +186,10 @@ class PluginCore < ApplicationController
 		#br
 		str = str.gsub("<br />", "\n")
 		str = str.gsub("\t", "")
+
+		#Links
+		str = str.gsub(/<a class="advanced" href="(.*?)">(.*?)<\/a>/, '[[\1|\2]]')
+		str = str.gsub(/<a class="simple" href="(.*?)">(.*?)<\/a>/, '[[\1]]')
 
 		#Table
 		str = str.gsub(/<table(.*?)>/, "")

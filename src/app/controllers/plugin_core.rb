@@ -112,7 +112,7 @@ class PluginCore < ApplicationController
 						inTd = 0
 					end
 					if(inTh == 1)
-						str+= "</th>"
+						str+= "&nbsp;</th>"
 					else 
 						if(inTr == 0)
 							inTr = 1
@@ -170,10 +170,10 @@ class PluginCore < ApplicationController
 		end
 
 		#table cleanup(TODO: Remove this)
-		str = str.gsub("<td></td>", "")
-		str = str.gsub("<td> </td>", "")
+		str = str.gsub("<td></td>", "<td>&nbsp;</td>")
+		str = str.gsub("<td> </td>", "<td>&nbsp;</td>")
 		str = str.gsub("<th>\r\t\t</th>", "")
-		str = str.gsub("<th></th>", "")
+		str = str.gsub("<th></th>", "<th>&nbsp;</th>")
 
 
 		#bold/italic/underline
@@ -186,6 +186,12 @@ class PluginCore < ApplicationController
 		str = str.gsub(/======(.*?)======/, '<h1>\1</h1>')
 		str = str.gsub(/=====(.*?)=====/, '<h2>\1</h2>')
 		str = str.gsub(/====(.*?)====/, '<h3>\1</h3>')
+		str = str.gsub(/===(.*?)===/, '<h4>\1</h4>')
+		str = str.gsub(/==(.*?)==/, '<h5>\1</h5>')
+
+		#Code tag
+		str = str.gsub(/&lt;code&gt;(.*?)&lt;\/code&gt;/, '<div class="nowiki">\1</div>')
+
 		#raise YAML::dump(str)
 		return str
 	end
@@ -232,6 +238,8 @@ class PluginCore < ApplicationController
 		str = str.gsub(/<h1>(.*?)<\/h1>/, '======\1======')
 		str = str.gsub(/<h2>(.*?)<\/h2>/, '=====\1=====')
 		str = str.gsub(/<h3>(.*?)<\/h3>/, '====\1====')
+		str = str.gsub(/<h4>(.*?)<\/h4>/, '===\1===')
+		str = str.gsub(/<h5>(.*?)<\/h5>/, '==\1==')
 
 		return str
 	end

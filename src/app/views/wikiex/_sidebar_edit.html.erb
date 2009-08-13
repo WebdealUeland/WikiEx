@@ -1,1 +1,12 @@
-<h2>Older revisions</h2>
+<h2>Older versions</h2>
+<ul>
+<% if(@versions) %>
+	<% @versions.each do |v| %>
+		<li>
+			<a href="?showversion=<%=v.id%>">
+				Version <%= v.version %> by <%= v.author %>, <%= v.when %>.
+			</a>
+		</li>
+	<% end %>
+<% end %>
+</ul>

@@ -37,4 +37,21 @@
 		<input type="hidden" name="path" value="<%= @path %>" />
 		<input type="submit" value="Save changes" />
 	</form>
+<% if @oldVersion %>
+	<hr>
+	<h2>Version <%=@oldVersion.id%>/<%= @oldVersion.version %> by <%= @oldVersion.author %>, <%= @oldVersion.when %></h2>
+	<div id="edit-news">
+		<div class="box tabular">
+			<p>
+				<label for="text">Page title</label>
+				<input type="text" name="title" value="<%=@oldVersion.title%>" />
+			</p>
+			<p>
+				<label for="text">Summary</label>
+				<textarea id="text" name="text" rows="14" class="wiki-edit"><%=@oldVersion.content%></textarea>
+			</p>
+		</div>
+	</div>
+<% end %>
+
 </div>

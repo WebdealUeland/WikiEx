@@ -27,13 +27,22 @@ class PluginCore < ApplicationController
 		if(skipSave)
 			str['/save'] = ""
 		end
-		#str['/wikiex'] = ""
+	
+		#Make shure any params are not dragged along
+		if(str.include? "?")
+			tmp = str.split("?")
+			str = tmp[0]
+		end
+
 		return str
 	end
 
 
 	#Converts Wiki code to HTML
 	def toWikiCode(orig)
+
+		# Force a bit of air in bottom of pages
+		orig = orig+"\r\r"
 
 		# Remove strange newlines and tab characters
 		orig = orig.split(/\n+/).join("\n")
@@ -95,7 +104,7 @@ class PluginCore < ApplicationController
 			if(c == "^" || c == "|")
 				if(inTable == 0)
 					inTable = 1
-					str += "<table class='inline'>\n"
+					str += "<table class='inline'>"
 				end
 				if(c == "^")
 					if(inTd == 1)
@@ -107,31 +116,31 @@ class PluginCore < ApplicationController
 					else 
 						if(inTr == 0)
 							inTr = 1
-							str+= "\t<tr>"
+							str+= "<tr>"
 						end
 						inTh = 1
 					end
-					str += "\n\t\t<th>"
+					str += "<th>"
 				end
 				if(c == "|")
 
 					if(inTable == 0)
-						str +="<table border='1' width='1'>\n"
+						str +="<table border='1' width='1'>"
 					end
 					if(inTh == 1 && inTr == 1)
-						str += "\t\t</th>"
+						str += "</th>"
 						inTh = 0
 					end
 					if(inTr == 0)
-						str += "\t<tr>"
+						str += "<tr>"
 						inTr = 1
 					end
 					if(inTd == 0)
-						str += "\n\t\t<td>"
+						str += "<td>"
 						inTd = 1
 					end
 					if(inTd == 1)
-						str += "</td>\n\t\t<td>"
+						str += "</td><td>"
 					end
 				end
 			else
@@ -140,18 +149,23 @@ class PluginCore < ApplicationController
 					inTh = 0
 				end
 				if(inTd == 1 && lineBreaks > 0)
-					str += "</td>\n"
+					str += "</td>"
 					inTd = 0
 				end
 				if(inTr == 1 && lineBreaks > 0)
-					str += "\n\t</tr>"
+					str += "</tr>"
 					inTr = 0
 				end
 				if(inTable == 1 && lineBreaks > 1)
 					str += "</table>"
 					inTable = 0	
 				end
-				str += c
+                                if(inTh == 1 || inTd == 1 || inTr == 1 || inTable == 1)
+                                        str += c
+                                else
+                                        str += c.gsub("\r", "<br />")
+                                end
+
 			end
 		end
 
@@ -159,9 +173,7 @@ class PluginCore < ApplicationController
 		str = str.gsub("<td></td>", "")
 		str = str.gsub("<td> </td>", "")
 		str = str.gsub("<th>\r\t\t</th>", "")
-
-                #Line breaks
-                str = str.gsub("\r", "<br />")
+		str = str.gsub("<th></th>", "")
 
 
 		#bold/italic/underline

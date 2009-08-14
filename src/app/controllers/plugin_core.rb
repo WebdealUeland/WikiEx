@@ -108,11 +108,11 @@ class PluginCore < ApplicationController
 				end
 				if(c == "^")
 					if(inTd == 1)
-						str+= "&nbsp;</td>"
+						str+= "</td>"
 						inTd = 0
 					end
 					if(inTh == 1)
-						str+= "&nbsp;</th>"
+						str+= "</th>"
 					else 
 						if(inTr == 0)
 							inTr = 1
@@ -170,10 +170,10 @@ class PluginCore < ApplicationController
 		end
 
 		#table cleanup(TODO: Remove this)
-		str = str.gsub("<td></td>", "<td>&nbsp;</td>")
-		str = str.gsub("<td> </td>", "<td>&nbsp;</td>")
+		str = str.gsub("<td></td>", "")
+		str = str.gsub("<td> </td>", "")
 		str = str.gsub("<th>\r\t\t</th>", "")
-		str = str.gsub("<th></th>", "<th>&nbsp;</th>")
+		str = str.gsub("<th></th>", "")
 
 
 		#bold/italic/underline

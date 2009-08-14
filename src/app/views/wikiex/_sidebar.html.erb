@@ -2,3 +2,18 @@
 <a class="icon icon-edit" accesskey="e" href="<%=@path%>/edit">Edit this page</a
 
 <p>To add a page, simply type in the URL you would like to place the page under, f.ex wikiex/projectname/testpage</p>
+
+<% if @subPages && @subPages.size > 0 %>
+	<h2>Subpages</h2>
+	<ul>
+	<% @subPages.each do |v| %>
+		<li>
+			<% if(v.title == "") %>
+				<a href="<%= v.url %>"><%= v.url %></a>
+			<% else %>
+				<a href="<%= v.url %>"><%= v.title %></a>
+			<% end %>
+		</li>
+	<% end %>
+	</ul>
+<% end %>

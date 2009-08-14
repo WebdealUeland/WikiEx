@@ -7,6 +7,15 @@ class PagesController < PluginCore
   def view
 	@path = getPage()
 	@page = Page.find(:first, :conditions => ["url=?", @path])
+
+	if(@page.nil? == false)
+		if(@page.url.ends_with?("/") == false)
+			url = @page.url+"/"
+		else
+			url = @page.url
+		end	
+		@subPages = Page.find(:all, :conditions => ["url LIKE '#{url}%%'"])
+	end
   end
 
   # Edit wiki page

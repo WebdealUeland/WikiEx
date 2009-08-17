@@ -31,7 +31,7 @@
 
 			<p>
 				<label for="text">Summary<span class="required"> *</span></label>	
-				<textarea id="text" name="text" rows="14" class="wiki-edit"><% if @page %><%=@page.content%><% end %></textarea>
+				<textarea id="text" name="text" rows="14" class="wiki-edit"><% if @page %><%=@page.original%><% end %></textarea>
 			</p>
 		</div>
 		<input type="hidden" name="path" value="<%= @path %>" />

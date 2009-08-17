@@ -22,9 +22,7 @@ class PagesController < PluginCore
   def edit
         @path = getPage(true)
         @page = Page.find(:first, :conditions => ["url=?", @path])
-
 	if(@page.nil? == false)
-		@page['content'] = fromWikiCode(@page['content'])
 		@versions = Revision.find(:all, :conditions => ["pageid=?", @page.id], :limit => 25, :order => "id DESC")
 
 		#Make shure version number is set	
@@ -52,7 +50,7 @@ class PagesController < PluginCore
 		@rev['pageid']  = @page['id']
 		@rev['version'] = @page['version']
 		@rev['title']   = @page['title']
-		@rev['content'] = @page['content']
+		@rev['content'] = @page['original']
 		@rev['when']    = Date.today
 		@rev['author']  = "n/a"
 
@@ -62,7 +60,8 @@ class PagesController < PluginCore
 		end
 		@rev.save()
 	end
-	@page['content'] = toWikiCode(params['text'])
+	@page['content'] = toWikiCode(params['text']+"\r\r\r\r")
+	@page['original'] = params['text'];
 	@page['title'] = params['title']
 	@page['url']  = path.to_s
 	if(@page['version'])

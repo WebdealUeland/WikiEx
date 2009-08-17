@@ -67,11 +67,13 @@ class PluginCore < ApplicationController
 				parsed = parsed.gsub("*", "&#42;")
 				parsed = parsed.gsub("/", "&#47;")
 				parsed = parsed.gsub("_", "&#95;")
+				parsed = parsed.gsub("^", "&#94")
+				parsed = parsed.gsub("|", "&#124")
 				afterNoWiki += parsed
 			else
 				if(inDiv == 1)
 					inDiv = 0
-					afterNoWiki += "</div>"
+					afterNoWiki += "</div><br /><br />"
 				end
 				afterNoWiki += d
 			end
@@ -138,9 +140,10 @@ class PluginCore < ApplicationController
 					if(inTd == 0)
 						str += "<td>"
 						inTd = 1
-					end
-					if(inTd == 1)
-						str += "</td><td>"
+					else
+						if(inTd == 1)
+							str += "</td><td>"
+						end
 					end
 				end
 			else
@@ -170,10 +173,8 @@ class PluginCore < ApplicationController
 		end
 
 		#table cleanup(TODO: Remove this)
-		str = str.gsub("<td></td>", "")
-		str = str.gsub("<td> </td>", "")
-		str = str.gsub("<th>\r\t\t</th>", "")
-		str = str.gsub("<th></th>", "")
+		str = str.gsub("<th></th></tr>", "</tr>")
+		str = str.gsub("<td></td></tr>", "</tr>")
 
 
 		#bold/italic/underline
@@ -196,57 +197,6 @@ class PluginCore < ApplicationController
 		str = str.gsub("\\\\", "<br>")
 
 		#raise YAML::dump(str)
-		return str
-	end
-
-
-	# Converts from HTML to wiki code
-	# (And yes, the function names is mirrored for some reason...)
-	def fromWikiCode(str)
-
-		#remove autoformated newlines
-		str = str.gsub("\n", "")
-		str = str.gsub("\t", "  ")
-		str = str.gsub("&nbsp;", " ")
-
-		#Remove extra newlines
-		str = str.gsub("<br>", "\\\\\\")
-
-		#Remove nowiki code snippets
-		str = str.gsub(/<div class="nowiki">(.*?)<\/div>/, '\1')
-
-		#br
-		str = str.gsub("<br />", "\n")
-		str = str.gsub("\t", "")
-
-		#Links
-		str = str.gsub(/<a class="advanced" href="(.*?)">(.*?)<\/a>/, '[[\1|\2]]')
-		str = str.gsub(/<a class="simple" href="(.*?)">(.*?)<\/a>/, '[[\1]]')
-
-		#Table
-		str = str.gsub(/<table(.*?)>/, "")
-		str = str.gsub("</td></tr>", "|")
-		str = str.gsub(/<tr>/, "")
-		str = str.gsub("</tr>", "")
-		str = str.gsub("<th>", "^")
-		str = str.gsub("</th>", "")
-		str = str.gsub("<td>", "|")
-		str = str.gsub("</td>", "")
-		str = str.gsub("</table>", "")
-			
-	
-		#bold/italic/underline
-		str = str.gsub(/<b>(.*?)<\/b>/, '**\1**')
-		str = str.gsub(/<i>(.*?)<\/i>/, '//\1//')
-		str = str.gsub(/<u>(.*?)<\/u>/, '__\1__')
-
-		#Hn
-		str = str.gsub(/<h1>(.*?)<\/h1>/, '======\1======')
-		str = str.gsub(/<h2>(.*?)<\/h2>/, '=====\1=====')
-		str = str.gsub(/<h3>(.*?)<\/h3>/, '====\1====')
-		str = str.gsub(/<h4>(.*?)<\/h4>/, '===\1===')
-		str = str.gsub(/<h5>(.*?)<\/h5>/, '==\1==')
-
 		return str
 	end
 end

@@ -42,7 +42,7 @@ class PluginCore < ApplicationController
 	def toWikiCode(orig)
 
 		# Force a bit of air in bottom of pages
-		orig = orig+"\r\r"
+		# orig = orig+"\r\r"
 
 		# Remove strange newlines and tab characters
 		orig = orig.split(/\n+/).join("\n")
@@ -192,6 +192,9 @@ class PluginCore < ApplicationController
 		#Code tag
 		str = str.gsub(/&lt;code&gt;(.*?)&lt;\/code&gt;/, '<div class="nowiki">\1</div>')
 
+		#Extra newlines
+		str = str.gsub("\\\\", "<br>")
+
 		#raise YAML::dump(str)
 		return str
 	end
@@ -205,6 +208,9 @@ class PluginCore < ApplicationController
 		str = str.gsub("\n", "")
 		str = str.gsub("\t", "  ")
 		str = str.gsub("&nbsp;", " ")
+
+		#Remove extra newlines
+		str = str.gsub("<br>", "\\\\\\")
 
 		#Remove nowiki code snippets
 		str = str.gsub(/<div class="nowiki">(.*?)<\/div>/, '\1')

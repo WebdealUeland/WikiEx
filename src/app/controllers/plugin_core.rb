@@ -53,6 +53,7 @@ class PluginCore < ApplicationController
                 orig = orig.gsub(">", "&gt;")
 
 
+		#Perform parsing of nowiki tags
 		afterNoWiki = ""
 		tmp = orig.split("\n")
 		inDiv = 0
@@ -195,6 +196,18 @@ class PluginCore < ApplicationController
 
 		#Extra newlines
 		str = str.gsub("\\\\", "<br>")
+
+		#Include of other wiki pages
+		includes = str.scan(/\{\{(.*?)\}\}/)
+		includes.each do |i|	
+			i = i.first
+			#Try to find the page here referenced by i
+			incPage = Page.find(:first, :conditions => ["url=?", getPage(true,true)+"/"+i])
+			if(incPage.nil? == false)
+				str = str.gsub("{{"+i+"}}", incPage['content'])	
+			end
+		end
+		str = str.gsub(/\{\{(.*?)\}\}/, '')
 
 		#raise YAML::dump(str)
 		return str

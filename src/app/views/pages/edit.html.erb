@@ -1,3 +1,12 @@
+<script type="text/javascript">
+
+	function addW(what) {
+		el = document.getElementById('text');
+		el.value += what;
+	}
+
+</script>
+
 <% if @page %>
 	<h2>
 		Editing page 
@@ -30,7 +39,12 @@
 			</p>
 
 			<p>
-				<label for="text">Summary<span class="required"> *</span></label>	
+				<label for="text">Summary<span class="required"> *</span></label>
+				<input type="button"  value="H1" onClick="addW('\n====== h1 ======\n');" />
+				<input type="button"  value="H2" onClick="addW('\n===== h2 =====\n');" />
+				<input type="button"  value="H3" onClick="addW('\n==== h3 ====\n');" />
+				<input type="button"  value="H4" onClick="addW('\n=== h4 ===\n');" />
+				<input type="button"  value="H5" onClick="addW('\n== h5 ==\n');" />
 				<textarea id="text" name="text" rows="14" class="wiki-edit"><% if @page %><%=@page.original%><% end %></textarea>
 			</p>
 		</div>

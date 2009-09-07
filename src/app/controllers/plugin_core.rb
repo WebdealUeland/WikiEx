@@ -52,6 +52,19 @@ class PluginCore < ApplicationController
                 orig = orig.gsub("<", "&lt;")
                 orig = orig.gsub(">", "&gt;")
 
+		#Convert some old syntax to correct syntax
+		sorig = orig.gsub(/h1\.(.*?)\n/, '===== \1 =====')
+
+                #Construct Table Of Contents
+		chapters = "<div id='listOfContents' class='contextual'><b>Table of contents</b><ul>"
+                chapTmp = orig.scan(/======(.*?)======/)
+		i = 0
+		chapTmp.each do |c|
+			c = c[0]
+			i += 1
+			chapters += "<li><a href=\"#"+i.to_s+"\">"+c+"</a></li>\n"
+		end
+		chapters += "</div>";
 
 		#Perform parsing of nowiki tags
 		afterNoWiki = ""
@@ -70,6 +83,8 @@ class PluginCore < ApplicationController
 				parsed = parsed.gsub("_", "&#95;")
 				parsed = parsed.gsub("^", "&#94")
 				parsed = parsed.gsub("|", "&#124")
+				parsed = parsed.gsub("*", "&lowast;")
+				parsed = parsed.gsub("-", "&ndash;")
 				afterNoWiki += parsed
 			else
 				if(inDiv == 1)
@@ -185,12 +200,20 @@ class PluginCore < ApplicationController
 
 
 		#Hn
-		str = str.gsub(/======(.*?)======/, '<h1>\1</h1>')
+		#str = str.gsub(/======(.*?)======/, '<h1>\1</h1>')
+		h1tmp = orig.scan(/======(.*?)======/)
+                i = 0
+                h1tmp.each do |c|
+			i = i+1
+			c = c[0]
+			str = str.gsub("======"+c+"======", '<a name='+i.to_s+'></a><h1>'+c+'</h1>')
+		end
+
 		str = str.gsub(/=====(.*?)=====/, '<h2>\1</h2>')
 		str = str.gsub(/====(.*?)====/, '<h3>\1</h3>')
 		str = str.gsub(/===(.*?)===/, '<h4>\1</h4>')
 		str = str.gsub(/==(.*?)==/, '<h5>\1</h5>')
-
+	
 		#Code tag
 		str = str.gsub(/&lt;code&gt;(.*?)&lt;\/code&gt;/, '<div class="nowiki">\1</div>')
 
@@ -208,6 +231,9 @@ class PluginCore < ApplicationController
 			end
 		end
 		str = str.gsub(/\{\{(.*?)\}\}/, '')
+
+		#Add table of contents
+		str = "<!-- |TOC|--> "+chapters+"  <!-- /|TOC| --> "+str
 
 		#raise YAML::dump(str)
 		return str

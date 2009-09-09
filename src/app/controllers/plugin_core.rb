@@ -66,9 +66,52 @@ class PluginCore < ApplicationController
 		end
 		chapters += "</div>";
 
-		#Perform parsing of nowiki tags
-		afterNoWiki = ""
+		#Split string for some looping
 		tmp = orig.split("\n")
+
+		#Check for list!
+		afterList = ""
+		level = 0
+		tmp.each do |c|
+		
+			if(c.include? "-")
+
+				cleanStr = c.gsub(" -", "")
+				cleanStr = cleanStr.gsub("\r", "")
+
+				width = c.split("-").first
+				width = (width.length / 2)
+
+				if(level != width)
+					if(level < width)
+						level += 1
+						afterList += "<ul>\n"
+					else
+						if(level > width)
+							level -= 1
+							afterList += "</ul>\n"
+						end
+					end
+				end
+
+				afterList += "\t<li>"+cleanStr+"</li>\n"
+			else
+				#We are outside the list
+				if(level > 0)
+					while(level !=0)
+						level -= 1
+						afterList += "</ul>\n"
+					end
+				end
+				afterList += c
+			end
+
+		end
+
+
+		#Do noWiki checking
+		tmp = afterList.split("\n");
+		afterNoWiki = ""
 		inDiv = 0
 		tmp.each do |d|
 			if(d[0,2] == "  ")

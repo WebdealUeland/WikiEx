@@ -40,24 +40,9 @@ class PluginCore < ApplicationController
 
 	#Converts Wiki code to HTML
 	def toWikiCode(orig)
-
-		# Force a bit of air in bottom of pages
-		# orig = orig+"\r\r"
-
-		# Remove strange newlines and tab characters
-		orig = orig.split(/\n+/).join("\n")
-		orig = orig.gsub("\t", "  ")
-
-		#Remove other naughty characters
-                orig = orig.gsub("<", "&lt;")
-                orig = orig.gsub(">", "&gt;")
-
-		#Convert some old syntax to correct syntax
-		sorig = orig.gsub(/h1\.(.*?)\n/, '===== \1 =====')
-
                 #Construct Table Of Contents
 		chapters = "<div id='listOfContents' class='contextual'><b>Table of contents</b><ul>"
-                chapTmp = orig.scan(/======(.*?)======/)
+                chapTmp = orig.scan(/<h1>(.*?)<\/h1>/)
 		i = 0
 		chapTmp.each do |c|
 			c = c[0]
@@ -66,217 +51,18 @@ class PluginCore < ApplicationController
 		end
 		chapters += "</div>";
 
-		#Split string for some looping
-		tmp = orig.split("\n")
 
-		#Check for list!
-		afterList = ""
-		level = 0
-		tmp.each do |c|
-		
-			if(c.include? "-")
-
-				cleanStr = c.gsub(" -", "")
-				cleanStr = cleanStr.gsub("\r", "")
-
-				width = c.split("-").first
-				width = (width.length / 2)
-
-				if(level != width)
-					if(level < width)
-						level += 1
-						afterList += "<ul>\n"
-					else
-						if(level > width)
-							level -= 1
-							afterList += "</ul>\n"
-						end
-					end
-				end
-
-				afterList += "\t<li>"+cleanStr+"</li>\n"
-			else
-				#We are outside the list
-				if(level > 0)
-					while(level !=0)
-						level -= 1
-						afterList += "</ul>\n"
-					end
-				end
-				afterList += c
-			end
-
-		end
-
-
-		#Do noWiki checking
-		tmp = afterList.split("\n");
-		afterNoWiki = ""
-		inDiv = 0
-		tmp.each do |d|
-			if(d[0,2] == "  ")
-				if(inDiv == 0)
-					inDiv = 1
-					afterNoWiki += '<div class="nowiki">'
-				end
-				parsed = d
-				parsed = parsed.gsub(" ", "&nbsp;")
-				parsed = parsed.gsub("*", "&#42;")
-				parsed = parsed.gsub("/", "&#47;")
-				parsed = parsed.gsub("_", "&#95;")
-				parsed = parsed.gsub("^", "&#94")
-				parsed = parsed.gsub("|", "&#124")
-				parsed = parsed.gsub("*", "&lowast;")
-				parsed = parsed.gsub("-", "&ndash;")
-				afterNoWiki += parsed
-			else
-				if(inDiv == 1)
-					inDiv = 0
-					afterNoWiki += "</div><br /><br />"
-				end
-				afterNoWiki += d
-			end
-		end
-
-		#Convert links with spesific title
-                afterNoWiki = afterNoWiki.gsub(/\[\[(.*?)\|(.*?)\]\]/, '<a class="advanced" href="\1">\2</a>')	
-
-		#Convert links to href`s
-		afterNoWiki = afterNoWiki.gsub(/\[\[(.*?)\]\]/, '<a class="simple" href="\1">\1</a>')
-
-		str = ""
-		
-		#Table(s)
-		inTable = 0
-		inTh = 0
-		inTr = 0
-		inTd = 0
-		lineBreaks = 0
-		tmp = afterNoWiki.scan(/./)
-		tmp.each do |c|
-
-			#wait for line break
-			if(c == "\r")
-				lineBreaks += 1
-			else
-				lineBreaks = 0
-			end
-
-			if(c == "^" || c == "|")
-				if(inTable == 0)
-					inTable = 1
-					str += "<table class='inline'>"
-				end
-				if(c == "^")
-					if(inTd == 1)
-						str+= "</td>"
-						inTd = 0
-					end
-					if(inTh == 1)
-						str+= "</th>"
-					else 
-						if(inTr == 0)
-							inTr = 1
-							str+= "<tr>"
-						end
-						inTh = 1
-					end
-					str += "<th>"
-				end
-				if(c == "|")
-
-					if(inTable == 0)
-						str +="<table border='1' width='1'>"
-					end
-					if(inTh == 1 && inTr == 1)
-						str += "</th>"
-						inTh = 0
-					end
-					if(inTr == 0)
-						str += "<tr>"
-						inTr = 1
-					end
-					if(inTd == 0)
-						str += "<td>"
-						inTd = 1
-					else
-						if(inTd == 1)
-							str += "</td><td>"
-						end
-					end
-				end
-			else
-				if(inTh == 1 && lineBreaks > 0)
-					str += "</th>"
-					inTh = 0
-				end
-				if(inTd == 1 && lineBreaks > 0)
-					str += "</td>"
-					inTd = 0
-				end
-				if(inTr == 1 && lineBreaks > 0)
-					str += "</tr>"
-					inTr = 0
-				end
-				if(inTable == 1 && lineBreaks > 1)
-					str += "</table>"
-					inTable = 0	
-				end
-                                if(inTh == 1 || inTd == 1 || inTr == 1 || inTable == 1)
-                                        str += c
-                                else
-                                        str += c.gsub("\r", "<br />")
-                                end
-
-			end
-		end
-
-		#table cleanup(TODO: Remove this)
-		str = str.gsub("<th></th></tr>", "</tr>")
-		str = str.gsub("<td></td></tr>", "</tr>")
-
-
-		#bold/italic/underline
-		str = str.gsub(/\*\*(.*?)\*\*/, '<b>\1</b>')
-		str = str.gsub(/\/\/(.*?)\/\//, '<i>\\1</i>')
-		str = str.gsub(/__(.*?)__/, '<u>\\1</u>')
-
-
-		#Hn
-		#str = str.gsub(/======(.*?)======/, '<h1>\1</h1>')
-		h1tmp = orig.scan(/======(.*?)======/)
+ 		h1tmp = orig.scan(/<h1>(.*?)<\/h1>/)
                 i = 0
                 h1tmp.each do |c|
 			i = i+1
 			c = c[0]
-			str = str.gsub("======"+c+"======", '<a name='+i.to_s+'></a><h1>'+c+'</h1>')
+			orig = orig.gsub("<h1>"+c+"<\/h1>", '<a name='+i.to_s+'></a><h1>'+c+'</h1><input type="button" value="Edit chapter" style="float:right" onclick="window.location=window.location+\'/edit?chapter='+i.to_s+'\'" />')
 		end
-
-		str = str.gsub(/=====(.*?)=====/, '<h2>\1</h2>')
-		str = str.gsub(/====(.*?)====/, '<h3>\1</h3>')
-		str = str.gsub(/===(.*?)===/, '<h4>\1</h4>')
-		str = str.gsub(/==(.*?)==/, '<h5>\1</h5>')
-	
-		#Code tag
-		str = str.gsub(/&lt;code&gt;(.*?)&lt;\/code&gt;/, '<div class="nowiki">\1</div>')
-
-		#Extra newlines
-		str = str.gsub("\\\\", "<br>")
-
-		#Include of other wiki pages
-		includes = str.scan(/\{\{(.*?)\}\}/)
-		includes.each do |i|	
-			i = i.first
-			#Try to find the page here referenced by i
-			incPage = Page.find(:first, :conditions => ["url=?", getPage(true,true)+"/"+i])
-			if(incPage.nil? == false)
-				str = str.gsub("{{"+i+"}}", incPage['content'])	
-			end
-		end
-		str = str.gsub(/\{\{(.*?)\}\}/, '')
+		
 
 		#Add table of contents
-		str = "<!-- |TOC|--> "+chapters+"  <!-- /|TOC| --> "+str
+		str = "<!-- |TOC|--> "+chapters+"  <!-- /|TOC| --> "+orig
 
 		#raise YAML::dump(str)
 		return str

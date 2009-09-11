@@ -20,6 +20,7 @@ class PagesController < PluginCore
 
   # Edit wiki page
   def edit
+	@chapID = 0
         @path = getPage(true)
         @page = Page.find(:first, :conditions => ["url=?", @path])
 	if(@page.nil? == false)
@@ -29,6 +30,15 @@ class PagesController < PluginCore
 		if(!@page['version']) 
 			@page['version'] = 1
 		end
+
+	end
+
+	#Load a spesific chapter?
+        if(params[:chapter].nil? == false)
+                @chapID = params[:chapter].to_i
+		chContent = @page['original']+"<h1></h1>" #Hack, ugh
+		chk = chContent.scan(/<\/h1>(.*?)<h1>/m)
+		@page['original'] = chk[(@chapID -1)]
 	end
 
 	#Load a spesific version?
@@ -60,7 +70,32 @@ class PagesController < PluginCore
 		end
 		@rev.save()
 	end
-	@page['content'] = toWikiCode(params['text']+"\r\r\r\r")
+
+	#chapter magic
+	if(params['chapter'].to_i > 0)
+		chap = params['text']
+		text = @page['original']
+
+		newText = ""
+		tmp = text.split(/<h1>/)
+		counter = 0
+		tmp.each do |c|
+			if(counter == params['chapter'].to_i)
+				title = c.split(/<\/h1>/)
+				newText += "\n<h1>"+title[0]+"</h1>\n"+chap
+			else
+				if(counter > 0)	
+					newText += "\n<h1>"+c
+				else
+					newText += c	
+				end
+			end
+			counter += 1
+		end
+		params['text'] = newText
+	end
+
+	@page['content'] = toWikiCode(params['text']+"\r\r")
 	@page['original'] = params['text'];
 	@page['title'] = params['title']
 	@page['url']  = path.to_s

@@ -7,7 +7,7 @@ class PluginCore < ApplicationController
 		if(src.include? "/project/")
 			tmp = src.split("/")
 			#Fix redirect to make shure we are in right virtual folder for project	
-			if(src.ends_with?("/") == false)
+			if(src.ends_with?("/") == false && src.ends_with?("save") == false)
 				redirect_to getPage()+"/"
 			end
 			
@@ -34,6 +34,8 @@ class PluginCore < ApplicationController
 			tmp = str.split("?")
 			str = tmp[0]
 		end
+		
+		str = str.gsub("//", "/")
 
 		return str
 	end

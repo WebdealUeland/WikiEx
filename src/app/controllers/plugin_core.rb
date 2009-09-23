@@ -11,7 +11,15 @@ class PluginCore < ApplicationController
 				redirect_to getPage()+"/"
 			end
 			
-			arrayElem =  tmp.size - 1
+			arrayElem =  -1
+			i = 0
+			tmp.each do |c|
+				if(c == 'project')
+					arrayElem = (i +1)
+				end
+				i +=1
+			end
+			
 			return tmp[arrayElem]
 		else
 			return ""

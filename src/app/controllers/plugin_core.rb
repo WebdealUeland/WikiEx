@@ -7,7 +7,7 @@ class PluginCore < ApplicationController
 		if(src.include? "/project/")
 			tmp = src.split("/")
 			#Fix redirect to make shure we are in right virtual folder for project	
-			if(src.ends_with?("/") == false && src.ends_with?("save") == false)
+			if(src.ends_with?("/") == false && src.ends_with?("save") == false && src.ends_with?("edit") == false)
 				redirect_to getPage()+"/"
 			end
 			
@@ -51,31 +51,61 @@ class PluginCore < ApplicationController
 
 	#Converts Wiki code to HTML
 	def toWikiCode(orig)
+		parsed = ""
                 #Construct Table Of Contents
-		chapters = "<div id='listOfContents' class='contextual'><b>Table of contents</b><ul>"
-                chapTmp = orig.scan(/<h1>(.*?)<\/h1>/)
-		i = 0
-		chapTmp.each do |c|
-			c = c[0]
-			i += 1
-			chapters += "<li><a href=\"#"+i.to_s+"\">"+c+"</a></li>\n"
+		chapters = "<div id='listOfContents' class='contextual'><b>Table of contents</b><br />"
+                #chapTmp = orig.scan(/<h1>(.*?)<\/h1>/)
+		tmp = orig.split("\n")
+		url = getPage(true,true)
+		h1 = 0
+		h2 = 0
+		h3 = 0
+		tmp.each do |a|
+			
+			#Look for h1
+			if(a.include?("<h1>"))
+				h1 += 1
+
+				a = '<a name="'+h1.to_s+'.'+h2.to_s+'.'+h3.to_s+'"></a>' + a
+				a = '<div style="float:right"><a href="'+url+'/edit?chapter='+h1.to_s+'">Edit</a></div>' + a
+
+				#Get chapter name
+				chapTmp = a.split("<h1>")
+				chapter = chapTmp[1].split("</h1>").first
+				chapters = chapters + '<br /><a href="#'+h1.to_s+'.'+h2.to_s+'.'+h3.to_s+'">'+chapter+'</a><br />'
+			end
+
+			if(a.include?("<h2>"))
+				h2 += 1
+
+				a = '<a name="'+h1.to_s+'.'+h2.to_s+'.'+h3.to_s+'"></a>' + a
+				a = '<!-- <div style="float:right"><a href="'+url+'/edit?chapter='+h1.to_s+'&h2='+h2.to_s+'">Edit</a></div> --> ' + a
+
+				#Get chapter name
+				chapTmp = a.split("<h2>")
+				chapter = chapTmp[1].split("</h2>").first
+				chapters = chapters + '|-- <a href="#'+h1.to_s+'.'+h2.to_s+'.'+h3.to_s+'">'+chapter+'</a><br />'
+			end
+
+			if(a.include?("<h3>"))
+				h3 += 1
+				
+				a = '<a name="'+h1.to_s+'.'+h2.to_s+'.'+h3.to_s+'"></a>' + a
+				a = '<!-- <div style="float:right"><a href="'+url+'/edit?chapter='+h1.to_s+'&h2='+h2.to_s+'&h3='+h3.to_s+'">Edit</a></div> --> ' + a
+
+				#Get chapter name
+				chapTmp = a.split("<h3>")
+				chapter = chapTmp[1].split("</h3>").first
+				chapters = chapters + '|--- <a href="#'+h1.to_s+'.'+h2.to_s+'.'+h3.to_s+'">'+chapter+'</a><br />'
+			end
+			
+			parsed += a
 		end
-		chapters += "</div>";
 
+		chapters = chapters + "</div>"
 
- 		h1tmp = orig.scan(/<h1>(.*?)<\/h1>/)
-                i = 0
-                h1tmp.each do |c|
-			i = i+1
-			c = c[0]
-			orig = orig.gsub("<h1>"+c+"<\/h1>", '<a name='+i.to_s+'></a><h1>'+c+'</h1><input type="button" value="Edit chapter" style="float:right" onclick="window.location=window.location+\'/edit?chapter='+i.to_s+'\'" />')
-		end
-		
+		parsed = chapters + parsed
 
-		#Add table of contents
-		str = "<!-- |TOC|--> "+chapters+"  <!-- /|TOC| --> "+orig
-
-		#raise YAML::dump(str)
-		return str
+		return parsed
 	end
 end

@@ -20,6 +20,7 @@ class PagesController < PluginCore
 
   # Edit wiki page
   def edit
+	@hasChapter = 0
 	@chapID = 0
         @path = getPage(true)
         @page = Page.find(:first, :conditions => ["url=?", @path])
@@ -39,6 +40,7 @@ class PagesController < PluginCore
 		chContent = @page['original']+"<h1></h1>" #Hack, ugh
 		chk = chContent.scan(/<\/h1>(.*?)<h1>/m)
 		@page['original'] = chk[(@chapID -1)]
+		@hasChapter = 1
 	end
 
 	#Load a spesific version?

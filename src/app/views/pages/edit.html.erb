@@ -55,7 +55,7 @@ tinyMCE.init({
 <div id="edit-news">
 	<form action="<%= @path %>/edit/save" method="POST" id="box tabular" class="tabular">
 		<div class="box tabular">
-
+			<% if @hasChapter == 0 %>
 			<p>
 				<label for="text">Page title</label>
 				<% if @page %>
@@ -64,6 +64,7 @@ tinyMCE.init({
 					<input type="text" name="title" /> Current version: 1
 				<% end %>
 			</p>
+			<% end %>
 
 			<p>
 				<label for="text">Summary<span class="required"> *</span></label>

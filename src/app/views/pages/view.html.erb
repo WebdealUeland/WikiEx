@@ -47,6 +47,7 @@
     <%= render :partial => 'wikiex/sidebar' %>
 <% end %>
 
+<div class="wiki">
 
 <% if @page %>
 
@@ -63,3 +64,5 @@
 <% else %>
 	<p class="nodata">The page does not exist yet, if you want to create it, go <a href="<%=@path%>/edit"><b>here</b></a>.</p>
 <% end %>
+
+<div class="wiki">

@@ -6,12 +6,13 @@ class PluginCore < ApplicationController
 		src = getPage()
 		if(src.include? "/project/")
 			tmp = src.split("/")
-		
 			#Fix redirect to make shure we are in right virtual folder for project	
-			if(tmp.size == 4 && src.ends_with?("/") == false)
+			if(src.ends_with?("/") == false)
 				redirect_to getPage()+"/"
 			end
-			return tmp[3]
+			
+			arrayElem =  tmp.size - 1
+			return tmp[arrayElem]
 		else
 			return ""
 		end

@@ -30,11 +30,15 @@ class PluginCore < ApplicationController
  	#Returns page URL
 	def getPage(skipEdit=false, skipSave=false)
 		str = request.request_uri
-		if(skipEdit && str.include?"/edit")
-			str['/edit'] = ""
+		if(str.include? "/edit")
+			if(skipEdit == true)
+				str['/edit'] = ""
+			end
 		end
-		if(skipSave && str.include?"/save")
-			str['/save'] = ""
+		if(str.include? "/save")
+			if(skipSave)
+				str['/save'] = ""
+			end
 		end
 	
 		#Make shure any params are not dragged along

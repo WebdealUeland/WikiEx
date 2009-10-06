@@ -76,7 +76,7 @@ class PluginCore < ApplicationController
 				#Get chapter name
 				chapTmp = a.split("<h1>")
 				chapter = chapTmp[1].split("</h1>").first
-				chapters = chapters + '<br /><a href="#'+h1.to_s+'.'+h2.to_s+'.'+h3.to_s+'">'+chapter+'</a>'
+				chapters = chapters + '<a href="#'+h1.to_s+'.'+h2.to_s+'.'+h3.to_s+'">'+chapter+'</a><br />'
 			end
 
 			if(a.include?("<h2>"))
@@ -88,7 +88,7 @@ class PluginCore < ApplicationController
 				#Get chapter name
 				chapTmp = a.split("<h2>")
 				chapter = chapTmp[1].split("</h2>").first
-				chapters = chapters + '|-- <a href="#'+h1.to_s+'.'+h2.to_s+'.'+h3.to_s+'">'+chapter+'</a>'
+				chapters = chapters + '|-- <a href="#'+h1.to_s+'.'+h2.to_s+'.'+h3.to_s+'">'+chapter+'</a><br />'
 			end
 
 			if(a.include?("<h3>"))
@@ -100,7 +100,7 @@ class PluginCore < ApplicationController
 				#Get chapter name
 				chapTmp = a.split("<h3>")
 				chapter = chapTmp[1].split("</h3>").first
-				chapters = chapters + '|--- <a href="#'+h1.to_s+'.'+h2.to_s+'.'+h3.to_s+'">'+chapter+'</a>'
+				chapters = chapters + '|--- <a href="#'+h1.to_s+'.'+h2.to_s+'.'+h3.to_s+'">'+chapter+'</a><br />'
 			end
 			
 			parsed += a

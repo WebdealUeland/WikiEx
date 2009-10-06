@@ -14,7 +14,7 @@ class PagesController < PluginCore
 		else
 			url = @page.url
 		end	
-		@subPages = Page.find(:all, :conditions => ["url LIKE '#{url}%%' AND URL !='#{url}'"])
+		@subPages = Page.find(:all, :conditions => ["url LIKE '#{url}%%' AND URL !='#{url}'"], :order => ["title ASC"])
 	end
   end
 

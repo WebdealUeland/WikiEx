@@ -99,7 +99,9 @@ class PagesController < PluginCore
 
 	@page['content'] = toWikiCode(params['text']+"\r\r")
 	@page['original'] = params['text'];
-	@page['title'] = params['title']
+	if(params['chapter'].to_i == 0)
+		@page['title'] = params['title']
+	end
 	@page['url']  = path.to_s
 	if(@page['version'])
 		@page['version'] += 1

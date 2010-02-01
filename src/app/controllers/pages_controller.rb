@@ -51,6 +51,7 @@ class PagesController < PluginCore
 
   #Save wiki page
   def save
+	@user = User.find_by_id(session[:user_id])	
 	path = getPage(true, true)
 	@page = Page.find(:first, :conditions => ["url=?", path])
 	if(@page.nil?)
@@ -64,7 +65,7 @@ class PagesController < PluginCore
 		@rev['title']   = @page['title']
 		@rev['content'] = @page['original']
 		@rev['when']    = Date.today
-		@rev['author']  = "n/a"
+		@rev['author']  = @user['firstname']+" "+@user['lastname']
 
 		#Doublecheck version for new pages
 		if(!@rev['version'])

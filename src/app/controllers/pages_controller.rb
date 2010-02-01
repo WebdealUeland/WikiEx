@@ -65,7 +65,7 @@ class PagesController < PluginCore
 		@rev['title']   = @page['title']
 		@rev['content'] = @page['original']
 		@rev['when']    = Date.today
-		if(@user['firstname'].nil?)
+		if(@user.nil?)
 			@rev['author']  = "N/A"
 		else
 			@rev['author']  = @user['firstname']+" "+@user['lastname']
